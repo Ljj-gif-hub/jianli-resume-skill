@@ -1,5 +1,5 @@
 <#
-  Self-test for the jianli resume pipeline. Runs 6 checks against fixtures in
+  Self-test for the jianli resume pipeline. Runs 8 checks against fixtures in
   this folder using the sibling pdf_build.ps1 and mdhtml_check.ps1:
     1 overflow fixture -> pdf_build must FAIL (page-count guard)
     2 ok fixture       -> PAGES 1 + PDF_OK + FILL line, no FILL_WARN
@@ -7,6 +7,8 @@
     4 clean md/html    -> MDHTML_OK, exit 0
     5 residue injected -> MDHTML_FAIL, exit 1
     6 ghost md line    -> UNMATCH warning, still MDHTML_OK, exit 0
+    7 ghost html line  -> EXTRA warning, still MDHTML_OK, exit 0
+    8 ghost html +Strict -> MDHTML_STRICT_FAIL, exit 1
   Usage: powershell -ExecutionPolicy Bypass -File run-selftest.ps1
   Exit 0 iff all 6 pass. NOTE: keep this file ASCII-only (PS 5.1 + GBK trap).
 #>
@@ -44,12 +46,12 @@ $j3 = ($o3 -join "`n")
 $ok3 = ($c3 -eq 0) -and ($j3 -match 'PAGES 1') -and ($j3 -match 'FILL_WARN')
 Report 'thin fixture warns on fill ratio' $ok3 ("exit=" + $c3)
 
-# 4. clean md/html pair -> MDHTML_OK
-$o4 = & powershell -NoProfile -ExecutionPolicy Bypass -File $check -Markdown (Join-Path $dir 'fixture-ok.md') -Html (Join-Path $dir 'fixture-ok.html')
+# 4. clean md/html pair -> strict pass with ZERO unmatched/extra
+$o4 = & powershell -NoProfile -ExecutionPolicy Bypass -File $check -Strict -Markdown (Join-Path $dir 'fixture-ok.md') -Html (Join-Path $dir 'fixture-ok.html')
 $c4 = $LASTEXITCODE
 $j4 = ($o4 -join "`n")
-$ok4 = ($c4 -eq 0) -and ($j4 -match 'MDHTML_OK') -and ($j4 -notmatch 'MDHTML_FAIL')
-Report 'clean pair passes mdhtml check' $ok4 ("exit=" + $c4 + " out=" + $j4)
+$ok4 = ($c4 -eq 0) -and ($j4 -match 'MDHTML_OK unmatched=0 extra=0')
+Report 'clean pair strict-passes mdhtml check' $ok4 ("exit=" + $c4 + " out=" + $j4)
 
 # 5. residue -> MDHTML_FAIL (exit 1)
 $badHtml = Join-Path $tmp 'residue.html'
@@ -74,6 +76,24 @@ $j6 = ($o6 -join "`n")
 $ok6 = ($c6 -eq 0) -and ($j6 -match 'UNMATCH') -and ($j6 -match 'MDHTML_OK')
 Report 'unmatched md line reported' $ok6 ("exit=" + $c6 + " out=" + $j6)
 
+# 7. ghost html line -> EXTRA warn, still MDHTML_OK (exit 0)
+$xHtml = Join-Path $tmp 'extra.html'
+$hSrc = [System.IO.File]::ReadAllText((Join-Path $dir 'fixture-ok.html'), [System.Text.Encoding]::UTF8)
+$hSrc = $hSrc.Replace('</body>', '<div>html only sentence appears nowhere 9876543210</div></body>')
+[System.IO.File]::WriteAllText($xHtml, $hSrc, (New-Object System.Text.UTF8Encoding($false)))
+$o7 = & powershell -NoProfile -ExecutionPolicy Bypass -File $check -Markdown (Join-Path $dir 'fixture-ok.md') -Html $xHtml
+$c7 = $LASTEXITCODE
+$j7 = ($o7 -join "`n")
+$ok7 = ($c7 -eq 0) -and ($j7 -match 'EXTRA') -and ($j7 -match 'MDHTML_OK')
+Report 'html-only text reported as EXTRA' $ok7 ("exit=" + $c7)
+
+# 8. same input with -Strict -> MDHTML_STRICT_FAIL (exit 1)
+$o8 = & powershell -NoProfile -ExecutionPolicy Bypass -File $check -Strict -Markdown (Join-Path $dir 'fixture-ok.md') -Html $xHtml
+$c8 = $LASTEXITCODE
+$j8 = ($o8 -join "`n")
+$ok8 = ($c8 -ne 0) -and ($j8 -match 'MDHTML_STRICT_FAIL')
+Report 'strict mode blocks on extra' $ok8 ("exit=" + $c8)
+
 Remove-Item -LiteralPath $tmp -Recurse -Force
-Write-Output ("SELFTEST PASS " + $pass + "/6")
+Write-Output ("SELFTEST PASS " + $pass + "/8")
 if ($fail -gt 0) { exit 1 } else { exit 0 }

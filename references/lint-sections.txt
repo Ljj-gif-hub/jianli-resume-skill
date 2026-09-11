@@ -1,0 +1,4 @@
+# jianli lint: digit-less bullet check applies only to these ## sections
+# (UTF-8 data file, one section heading per line, # lines are comments).
+# Project bullets must carry numbers; skill/evaluation rows rarely need them.
+项目经历
