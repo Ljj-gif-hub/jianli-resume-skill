@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>简历</title>
+<style>
+  /* selftest fixture: nearly empty resume (header + one row). Prints PAGES 1 but
+     the fill ratio must drop below 60% and trigger FILL_WARN. */
+  @page { size: 615.1pt 870pt; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root {
+    --accent: #2F6FEB; --accent-dark: #1E4FC4; --ink: #1A1A1A;
+    --body: #3F434A; --muted: #8A9099; --line: #E8EAED;
+  }
+  body {
+    width: 820px; min-height: 1160px; margin: 0 auto;
+    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+    font-size: 14px; line-height: 1.5; color: var(--body); background: #FFF;
+  }
+  .header { padding: 48px 41px 18px; }
+  .name { font-size: 30px; font-weight: 700; color: var(--ink); letter-spacing: 1px; }
+  .contact { font-size: 14px; margin-top: 10px; line-height: 28px; }
+  .contact .dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-right: 8px; position: relative; top: -2px; }
+  .section { margin: 0 41px 10px; }
+  .sec-title { display: flex; align-items: center; margin: 12px 0 4px -2px; }
+  .sec-title .bar { width: 4px; height: 18px; border-radius: 2px; background: var(--accent); margin-right: 10px; flex: 0 0 auto; }
+  .sec-title span { font-size: 19px; font-weight: 700; color: var(--ink); letter-spacing: 2px; }
+  .srow { display: flex; align-items: baseline; margin-bottom: 6px; page-break-inside: avoid; }
+  .slab { flex: 0 0 118px; font-weight: 600; color: var(--accent-dark); }
+  .scont { flex: 1; line-height: 1.48; }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="name">李四</div>
+    <div class="contact">
+      <span class="dot"></span><b>电话：</b>13800000000&nbsp;&nbsp;&nbsp;<span class="dot"></span><b>邮箱：</b>test@example.com
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title"><span class="bar"></span><span>相关技能</span></div>
+    <div class="srow"><span class="slab">后端（主力）：</span><span class="scont">Java 17 · Spring Boot 3.2</span></div>
+  </div>
+
+<script>
+(function () {
+  var BOTTOM = 60;
+  function contentEnd(el) {
+    var kids = [];
+    for (var i = 0; i < el.children.length; i++) {
+      var c = el.children[i];
+      if (c.tagName === 'SCRIPT' || c.tagName === 'STYLE') { continue; }
+      kids.push(c);
+    }
+    if (kids.length === 0) { return el.scrollHeight; }
+    return kids[kids.length - 1].getBoundingClientRect().bottom;
+  }
+  function fit() {
+    var el = document.body;
+    var ow = parseFloat(el.getAttribute('data-ow'));
+    var oh = parseFloat(el.getAttribute('data-oh'));
+    if (!(ow > 0)) { ow = el.getBoundingClientRect().width || 820; el.setAttribute('data-ow', ow); }
+    if (!(oh > 0)) {
+      var mh = parseFloat(getComputedStyle(el).minHeight) || 0;
+      oh = mh > 0 ? mh : (parseFloat(getComputedStyle(el).height) || 1160);
+      el.setAttribute('data-oh', oh);
+    }
+    el.style.zoom = '1';
+    el.style.width = ow + 'px';
+    var ch = contentEnd(el);
+    var s = Math.min(1, (oh - BOTTOM) / ch, ow / el.scrollWidth);
+    if (!(s > 0.5)) { s = 0.5; }
+    el.style.width = Math.round(ow / s) + 'px';
+    el.style.zoom = s;
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', fit); }
+  else { fit(); }
+  window.addEventListener('load', fit);
+})();
+</script>
+</body>
+</html>

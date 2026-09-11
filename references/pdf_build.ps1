@@ -8,7 +8,9 @@
     - PDF smaller than 1KB is treated as a failed render.
     - Also screenshots the HTML to <same-stem>.png for layout checks.
     - Prints: PDF_OK <path> <bytes>
+              PAGES <n>        (render fails if n > 1)
               PNG_OK <path> <bytes>  (or PNG_FAIL if screenshot missing)
+              FILL <pct>       (content fill ratio; FILL_WARN below 60%)
   NOTE: keep this file ASCII-only. PowerShell 5.1 reads no-BOM UTF-8 as GBK,
         so any non-ASCII comment breaks parsing on Chinese Windows.
 #>
@@ -73,6 +75,30 @@ Start-Sleep -Seconds 2
 if (Test-Path -LiteralPath $png) {
   $pngSize = (Get-Item -LiteralPath $png).Length
   Write-Output "PNG_OK $png $pngSize"
+  # Fill-ratio heuristic: lowest non-near-white pixel row as % of page height.
+  # Catches the opposite failure of the page guard: a nearly empty resume still
+  # prints PAGES 1 silently. Dark full-height columns (sidebar template) read ~100%.
+  try {
+    Add-Type -AssemblyName System.Drawing
+    $bmp = [System.Drawing.Bitmap]::FromFile($png)
+    $h = $bmp.Height; $w = $bmp.Width
+    $bottom = -1
+    for ($y = $h - 1; $y -ge 0; $y--) {
+      for ($x = 0; $x -lt $w; $x += 3) {
+        $c = $bmp.GetPixel($x, $y)
+        if ($c.R -lt 245 -or $c.G -lt 245 -or $c.B -lt 245) { $bottom = $y; break }
+      }
+      if ($bottom -ge 0) { break }
+    }
+    $bmp.Dispose()
+    if ($bottom -ge 0) {
+      $pct = [int][math]::Round(100.0 * ($bottom + 1) / $h)
+      Write-Output "FILL $pct"
+      if ($pct -lt 60) { Write-Output "FILL_WARN content occupies only $pct% of the page (thin resume: add evidence or enrich bullets)" }
+    }
+  } catch {
+    Write-Output "FILL_SKIP"
+  }
 } else {
   Write-Output "PNG_FAIL $png"
 }

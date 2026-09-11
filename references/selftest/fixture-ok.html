@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>简历</title>
+<style>
+  /* selftest fixture: a known-good single-page resume using the classic template
+     contract (body 820x1160 min-height, @page 615.1pt x 870pt) with the fit script. */
+  @page { size: 615.1pt 870pt; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root {
+    --accent: #2F6FEB; --accent-dark: #1E4FC4; --ink: #1A1A1A;
+    --body: #3F434A; --muted: #8A9099; --line: #E8EAED;
+  }
+  body {
+    width: 820px; min-height: 1160px; margin: 0 auto;
+    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+    font-size: 14px; line-height: 1.5; color: var(--body); background: #FFF;
+  }
+  body.tier-compact { font-size: 13px; line-height: 1.42; }
+  body.tier-dense   { font-size: 12px; line-height: 1.34; }
+  body.tier-compact .section { margin-bottom: 7px; }
+  body.tier-dense   .section { margin-bottom: 5px; }
+  .header { padding: 48px 41px 18px; }
+  .name { font-size: 30px; font-weight: 700; color: var(--ink); letter-spacing: 1px; }
+  .contact { font-size: 14px; margin-top: 10px; line-height: 28px; }
+  .contact .dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-right: 8px; position: relative; top: -2px; }
+  .section { margin: 0 41px 10px; }
+  .sec-title { display: flex; align-items: center; margin: 12px 0 4px -2px; }
+  .sec-title .bar { width: 4px; height: 18px; border-radius: 2px; background: var(--accent); margin-right: 10px; flex: 0 0 auto; }
+  .sec-title span { font-size: 19px; font-weight: 700; color: var(--ink); letter-spacing: 2px; }
+  .divider { border-top: 1px solid var(--line); }
+  .skillslist { margin-top: 6px; }
+  .srow { display: flex; align-items: baseline; margin-bottom: 6px; page-break-inside: avoid; }
+  .slab { flex: 0 0 118px; font-weight: 600; color: var(--accent-dark); }
+  .scont { flex: 1; line-height: 1.48; }
+  .proj-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; font-weight: 700; color: var(--ink); margin: 2px 0 6px; }
+  .proj-head .pdate { font-size: 13px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+  .tech { font-size: 12.5px; color: var(--muted); margin-bottom: 5px; }
+  .intro { margin-bottom: 6px; }
+  .prow { display: flex; align-items: baseline; margin-bottom: 6px; page-break-inside: avoid; }
+  .plab { flex: 0 0 118px; font-weight: 600; color: var(--accent-dark); }
+  .pcont { flex: 1; line-height: 1.45; }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="name">李四</div>
+    <div class="contact">
+      <span class="dot"></span><b>电话：</b>13800000000&nbsp;&nbsp;&nbsp;<span class="dot"></span><b>邮箱：</b>test@example.com<br>
+      <span class="dot"></span><b>年龄：</b>23&nbsp;&nbsp;&nbsp;<span class="dot"></span><b>现所在地：</b>深圳<br>
+      <span class="dot"></span><b>最高学历：</b>本科&nbsp;&nbsp;&nbsp;<span class="dot"></span><b>意向岗位：</b>后端开发
+    </div>
+  </div>
+
+  <div class="section divider">
+    <div class="sec-title"><span class="bar"></span><span>教育背景</span></div>
+    <div class="srow"><span class="slab">云端大学：</span><span class="scont">计算机科学与技术 · 本科 · 2022.09-2026.06；主修：数据结构、操作系统、计算机网络</span></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title"><span class="bar"></span><span>相关技能</span></div>
+    <div class="skillslist">
+      <div class="srow"><span class="slab">后端（主力）：</span><span class="scont">Java 17 · Spring Boot 3.2 · Spring MVC · MyBatis Plus</span></div>
+      <div class="srow"><span class="slab">数据库：</span><span class="scont">MySQL · Redis（缓存与分布式锁）</span></div>
+      <div class="srow"><span class="slab">工程化：</span><span class="scont">Docker Compose 部署 · Git 分支协作 · JUnit 5 单测</span></div>
+      <div class="srow"><span class="slab">辅助扩展：</span><span class="scont">Python · FastAPI · 基础前端（Vue3）</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title"><span class="bar"></span><span>项目经历</span></div>
+    <div class="proj-head"><span>云端笔记同步服务</span><span class="pdate">2025.06 - 2026.06</span></div>
+    <div class="tech">技术栈：Spring Boot 3.2 · MySQL · Redis · Docker</div>
+    <div class="intro">面向个人用户的笔记多端同步服务，独立完成后端全部接口与部署。</div>
+    <div class="prow"><span class="plab">接口层：</span><span class="pcont">实现 28 个 REST 接口，覆盖笔记增删改查、回收站与标签体系。</span></div>
+    <div class="prow"><span class="plab">同步冲突：</span><span class="pcont">用版本号 + 时间戳做冲突合并，解决 3 端并发编辑互相覆盖的问题。</span></div>
+    <div class="prow"><span class="plab">性能优化：</span><span class="pcont">热点列表 Redis 缓存 + 增量拉取，接口平均耗时从 380ms 降到 90ms。</span></div>
+    <div class="prow"><span class="plab">鉴权安全：</span><span class="pcont">JWT 登录态 + 每分钟 60 次接口限流，拦住越权访问与批量爬取。</span></div>
+    <div class="prow"><span class="plab">部署运维：</span><span class="pcont">Docker Compose 一键部署，写备份脚本做数据库每日快照。</span></div>
+    <div class="prow"><span class="plab">测试保障：</span><span class="pcont">JUnit 5 单测 60+ 用例覆盖核心服务，回归全绿。</span></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title"><span class="bar"></span><span>自我评价</span></div>
+    <div class="srow"><span class="slab">工程闭环：</span><span class="scont">能独立完成从接口设计到 Docker 上线的后端闭环。</span></div>
+    <div class="srow"><span class="slab">疑难排障：</span><span class="scont">曾把一次线上 500 定位到连接池耗尽并修复，验证手段可复现。</span></div>
+    <div class="srow"><span class="slab">工程品质：</span><span class="scont">单测与文档同步交付，提交信息可读可追溯。</span></div>
+  </div>
+
+<script>
+(function () {
+  var BOTTOM = 60;
+  function contentEnd(el) {
+    var kids = [];
+    for (var i = 0; i < el.children.length; i++) {
+      var c = el.children[i];
+      if (c.tagName === 'SCRIPT' || c.tagName === 'STYLE') { continue; }
+      kids.push(c);
+    }
+    if (kids.length === 0) { return el.scrollHeight; }
+    return kids[kids.length - 1].getBoundingClientRect().bottom;
+  }
+  function fit() {
+    var el = document.body;
+    var ow = parseFloat(el.getAttribute('data-ow'));
+    var oh = parseFloat(el.getAttribute('data-oh'));
+    if (!(ow > 0)) { ow = el.getBoundingClientRect().width || 820; el.setAttribute('data-ow', ow); }
+    if (!(oh > 0)) {
+      var mh = parseFloat(getComputedStyle(el).minHeight) || 0;
+      oh = mh > 0 ? mh : (parseFloat(getComputedStyle(el).height) || 1160);
+      el.setAttribute('data-oh', oh);
+    }
+    el.style.zoom = '1';
+    el.style.width = ow + 'px';
+    var ch = contentEnd(el);
+    var s = Math.min(1, (oh - BOTTOM) / ch, ow / el.scrollWidth);
+    if (!(s > 0.5)) { s = 0.5; }
+    el.style.width = Math.round(ow / s) + 'px';
+    el.style.zoom = s;
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', fit); }
+  else { fit(); }
+  window.addEventListener('load', fit);
+})();
+</script>
+</body>
+</html>
