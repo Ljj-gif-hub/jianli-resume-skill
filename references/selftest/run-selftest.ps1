@@ -9,8 +9,9 @@
     6 ghost md line    -> UNMATCH warning, still MDHTML_OK, exit 0
     7 ghost html line  -> EXTRA warning, still MDHTML_OK, exit 0
     8 ghost html +Strict -> MDHTML_STRICT_FAIL, exit 1
+    9 literal glob asterisk (*) present in BOTH md and html -> strict 0/0
   Usage: powershell -ExecutionPolicy Bypass -File run-selftest.ps1
-  Exit 0 iff all 6 pass. NOTE: keep this file ASCII-only (PS 5.1 + GBK trap).
+  Exit 0 iff all 9 pass. NOTE: keep this file ASCII-only (PS 5.1 + GBK trap).
 #>
 $ErrorActionPreference = 'Continue'
 $dir = $PSScriptRoot
@@ -94,6 +95,21 @@ $j8 = ($o8 -join "`n")
 $ok8 = ($c8 -ne 0) -and ($j8 -match 'MDHTML_STRICT_FAIL')
 Report 'strict mode blocks on extra' $ok8 ("exit=" + $c8)
 
+# 9. literal glob asterisk in BOTH md and html -> still strict-pass 0/0
+$gMd = Join-Path $tmp 'glob.md'
+$gHtml = Join-Path $tmp 'glob.html'
+$mdSrc = [System.IO.File]::ReadAllText((Join-Path $dir 'fixture-ok.md'), [System.Text.Encoding]::UTF8)
+$hSrc = [System.IO.File]::ReadAllText((Join-Path $dir 'fixture-ok.html'), [System.Text.Encoding]::UTF8)
+$mdSrc = $mdSrc + "`n- tooling: release scripts include a glob pattern release_*.sh for backups 20260101.`n"
+$hSrc = $hSrc.Replace('</body>', '<div>tooling: release scripts include a glob pattern release_*.sh for backups 20260101.</div></body>')
+[System.IO.File]::WriteAllText($gMd, $mdSrc, (New-Object System.Text.UTF8Encoding($false)))
+[System.IO.File]::WriteAllText($gHtml, $hSrc, (New-Object System.Text.UTF8Encoding($false)))
+$o9 = & powershell -NoProfile -ExecutionPolicy Bypass -File $check -Strict -Markdown $gMd -Html $gHtml
+$c9 = $LASTEXITCODE
+$j9 = ($o9 -join "`n")
+$ok9 = ($c9 -eq 0) -and ($j9 -match 'MDHTML_OK unmatched=0 extra=0')
+Report 'literal asterisk in content matches both sides' $ok9 ("exit=" + $c9 + " out=" + $j9)
+
 Remove-Item -LiteralPath $tmp -Recurse -Force
-Write-Output ("SELFTEST PASS " + $pass + "/8")
+Write-Output ("SELFTEST PASS " + $pass + "/9")
 if ($fail -gt 0) { exit 1 } else { exit 0 }

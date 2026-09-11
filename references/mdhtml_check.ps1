@@ -66,7 +66,11 @@ $core = [regex]::Replace($core, '(?s)<script.*?</script>', ' ')
 $core = [regex]::Replace($core, '(?s)<!--.*?-->', ' ')
 $plain = [regex]::Replace($core, '<[^>]+>', ' ')
 $plain = $plain -replace '&nbsp;', ' ' -replace '&amp;', '&' -replace '&lt;', '<' -replace '&gt;', '>' -replace '&quot;', '"' -replace '&#39;', "'"
-$squash = ($plain -replace $bracketClass, '' -replace '\s+', '')
+# Matching-side text: strip markdown markers here too, so a literal * in HTML
+# content (e.g. a glob filename like release_*.sh) cannot break UNMATCH matching.
+# RESIDUE detection above still runs on the raw $plain.
+$plainMatch = $plain.Replace([string][char]96, '') -replace '\*\*', '' -replace '\*', ''
+$squash = ($plainMatch -replace $bracketClass, '' -replace '\s+', '')
 
 $exit = 0
 
