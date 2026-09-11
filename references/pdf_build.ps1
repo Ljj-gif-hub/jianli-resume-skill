@@ -48,6 +48,20 @@ if (-not $ok) { throw "PDF generation failed: $out" }
 
 $size = (Get-Item -LiteralPath $out).Length
 if ($size -lt 1000) { throw "PDF looks blank ($size bytes), render may have failed" }
+
+# Single-page guard: the PNG screenshot only shows the first viewport, so an
+# overflow onto a second PDF page would be invisible there. Count pages instead.
+# (ASCII only below: PS 5.1 reads no-BOM UTF-8 as GBK, non-ASCII comments break it.)
+$bytes = [System.IO.File]::ReadAllBytes($out)
+$pdfText = [System.Text.Encoding]::GetEncoding('ISO-8859-1').GetString($bytes)
+$pages = [regex]::Matches($pdfText, '/Type\s*/Page(?!s)').Count
+if ($pages -eq 0) {
+  $counts = [regex]::Matches($pdfText, '/Count\s+(\d+)') | ForEach-Object { [int]$_.Groups[1].Value }
+  if ($counts.Count -gt 0) { $pages = ($counts | Measure-Object -Maximum).Maximum }
+}
+Write-Output "PAGES $pages"
+if ($pages -gt 1) { throw "PDF has $pages pages (expected exactly 1). Content overflows: cut content, use a denser tier, or check fit-script injection." }
+
 Write-Output "PDF_OK $out $size"
 
 # Layout check must use PNG. Volcengine GLM/Doubao reject content.type=document
