@@ -3,7 +3,8 @@ name: jianli
 description: >
   针对目标面试岗位（或具体公司的 JD），为当前项目（任意项目）生成定制中文简历。
   自动"指纹识别"项目的技术栈/领域/规模/你的贡献（git 提交与文档），按岗位矩阵或
-  JD 定制技能栏、项目亮点与自我评价，产出 md + HTML + PDF 三种格式（PDF 自动打开预览），
+  JD 定制技能栏、项目亮点与自我评价，产出 md + HTML + PDF 三件套
+  （经典/双栏/极简/现代四套版式模板，关键词切换；PDF 自动打开预览），
   可选产出 BOSS 直聘文案与面试准备题。安装到用户级技能目录后，任意项目启动的会话都能用。
   触发词："生成简历"、"写简历"、"帮我搞份简历"、"/jianli"、"审查简历"、"检查简历"。
   用法：/jianli <目标岗位>，如 /jianli 后端开发、/jianli Vue前端、/jianli AI应用开发。
@@ -93,12 +94,13 @@ description: >
 - 结构：个人信息 / 相关技能 / 项目经历 / 自我评价
 - 项目经历用亮点 bullet：做了什么 + 怎么做 + 结果/规模
 - 技术栈排序以岗位（或 JD 技术栈）为核心，辅助技术压后或并入"辅助扩展"一行
+- **模板选择**：调用参数带版式关键词时切换模板——`双栏/侧栏`→`references/templates/template-sidebar.html`、`极简/黑白/学术/外企`→`template-minimal.html`、`现代/彩色/渐变/设计感`→`template-accent.html`、不带关键词或`经典/商务`→内置 `resume-template.html`（经典单栏）。关键词认不出（如"好看点的"）→ AskUserQuestion 列四套让用户选。矩阵见 `references/templates/README.md`；所有模板共享同一契约（@page 615.1pt×870pt、body 820×1160、tier 密度档、fit 脚本），换模板不影响单页保证
 - 文件名：岗位模式写 `简历-<岗位>.md`；JD 模式写 `简历-<公司>-<岗位>.md`，多公司各一份。写入当前项目根目录或用户指定路径
 - **覆盖前备份**：目标产物（md / html / pdf / png 整套）已存在时，先整套复制到 `简历备份/<YYYYMMDD-HHmm>-<岗位>/` 再覆盖——改坏可回退；备份目录内文件已被 .gitignore 的 `*简历*` 规则按文件名排除
 
 ### PDF 产出（标准交付，不是可选项）
 
-1. **渲染 HTML**：产出 `resume-<岗位>.html`（JD 模式 `resume-<公司>-<岗位>.html`）。优先以当前项目根目录已有的 `resume.html` 为基底，套用其 CSS 与 `_resume_assets/` 素材填内容；项目没有模板时用 skill 内置 `references/resume-template.html`。头像/图标用项目素材或【占位】。
+1. **渲染 HTML**：产出 `resume-<岗位>.html`（JD 模式 `resume-<公司>-<岗位>.html`）。优先以当前项目根目录已有的 `resume.html` 为基底，套用其 CSS 与 `_resume_assets/` 素材填内容；项目没有模板时按"模板选择"规则选内置模板。头像/图标用项目素材或【占位】。
 2. **单页保证**：简历必须恰好一页，按 `references/writing-guide.md` 的"单页优先"三道闸执行——① 内容超容量先砍弱化项；② 仍饱满给 `<body>` 加密度档 class（`tier-compact` / `tier-dense`）；③ 最后靠模板自带 fit 脚本自动缩放兜底。**复用项目 resume.html 时，务必把内置模板底部那段 fit `<script>` 整段注入到 `</body>` 前**，并核对 `@page` 尺寸与 body 画布一致（@page 615.1pt×870pt ↔ body 820×1160），否则仍会溢到第二页。
 3. **转 PDF + PNG**：调用 skill 目录下 `references/pdf_build.ps1`：
    `powershell -ExecutionPolicy Bypass -File <skill>/references/pdf_build.ps1 -InputHtml <html> -OutputPdf <pdf>`，

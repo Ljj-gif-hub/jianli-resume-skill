@@ -60,7 +60,7 @@
 ## 版式与渠道
 
 - **附件简历（md + HTML + PDF 三件套，PDF 为标准交付）**：
-  - 产出 `resume-<岗位>.html`：优先复用项目内已有 `resume.html` 模板的 CSS 与 `_resume_assets/` 素材（头像/图标），没有则用 skill 内置 `references/resume-template.html`
+  - 产出 `resume-<岗位>.html`：优先复用项目内已有 `resume.html` 模板的 CSS 与 `_resume_assets/` 素材（头像/图标）；没有则按用户版式关键词选内置模板——默认经典 `references/resume-template.html`，`双栏/极简/现代`等关键词映射见 `references/templates/README.md`
   - 用 `references/pdf_build.ps1`（Edge 无头模式）转 PDF，输出 `简历-<岗位>.pdf` 与 md 同目录
   - 转完 `Start-Process` 打开 PDF 给用户预览
 

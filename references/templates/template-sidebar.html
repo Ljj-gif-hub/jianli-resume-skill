@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>简历</title>
+<style>
+  /* 双栏模板（sidebar）：左侧深色栏（联系/技能/自评）+ 右侧主栏（项目经历）。
+     与经典模板同契约：body 820x1160 (min-height)，@page 615.1pt x 870pt，tier 密度档，底部 fit 脚本。 */
+  @page { size: 615.1pt 870pt; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root { --accent: #4C8BF5; --ink: #FFFFFF; --body: #D7DEEB; --muted: #9DB0CC; --line: #3A4A68; }
+  body {
+    width: 820px; min-height: 1160px; margin: 0 auto; display: flex;
+    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+    font-size: 13.5px; line-height: 1.5; color: var(--body); background: #FFF;
+  }
+  body.tier-compact { font-size: 12.5px; line-height: 1.42; }
+  body.tier-dense   { font-size: 12px;   line-height: 1.34; }
+
+  aside.side {
+    flex: 0 0 268px; background: #22314F; padding: 44px 26px 30px;
+    display: flex; flex-direction: column;
+  }
+  .side .name { font-size: 25px; font-weight: 700; color: #FFF; letter-spacing: 2px; }
+  .side .role { font-size: 13px; color: var(--accent); font-weight: 600; margin-top: 6px; letter-spacing: 1px; }
+  .side .sec  { margin-top: 26px; }
+  .side .sec-title { font-size: 14.5px; font-weight: 700; color: #FFF; letter-spacing: 2px; padding-bottom: 6px; border-bottom: 1px solid var(--line); margin-bottom: 10px; }
+  .side .item { margin-bottom: 9px; }
+  .side .item b { display: block; color: var(--accent); font-size: 12.5px; margin-bottom: 2px; }
+  .side .contact p { margin-bottom: 6px; font-size: 12.5px; }
+
+  main.col {
+    flex: 1; padding: 44px 32px 30px 30px; background: #FFF; color: #3F434A;
+  }
+  .sec-title-main { display: flex; align-items: center; margin: 0 0 4px -2px; }
+  .sec-title-main .bar { width: 4px; height: 17px; border-radius: 2px; background: var(--accent); margin-right: 9px; flex: 0 0 auto; }
+  .sec-title-main span { font-size: 17.5px; font-weight: 700; color: #1A1A1A; letter-spacing: 2px; }
+  .divider { border-top: 1px solid #E8EAED; margin-bottom: 8px; }
+  .section { margin-bottom: 12px; }
+  .proj-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 14.5px; font-weight: 700; color: #1A1A1A; margin: 2px 0 5px; }
+  .proj-head .pdate { font-size: 12.5px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+  .tech { font-size: 12px; color: #8A9099; margin-bottom: 5px; }
+  .intro { margin-bottom: 6px; }
+  .prow { display: flex; align-items: baseline; margin-bottom: 6px; page-break-inside: avoid; }
+  .plab { flex: 0 0 108px; font-weight: 600; color: #1E4FC4; }
+  .pcont { flex: 1; line-height: 1.45; }
+</style>
+</head>
+<body>
+
+  <aside class="side">
+    <div class="name">【姓名】</div>
+    <div class="role">【意向岗位】</div>
+
+    <div class="sec">
+      <div class="sec-title">联系方式</div>
+      <div class="contact">
+        <p>电话：【电话】</p>
+        <p>邮箱：【邮箱】</p>
+        <p>年龄：【年龄】</p>
+        <p>所在地：【城市】</p>
+        <p>学历：【学历】</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">相关技能</div>
+      <div class="item"><b>【技能标签】</b>【技能内容】</div>
+      <div class="item"><b>【技能标签】</b>【技能内容】</div>
+      <div class="item"><b>【技能标签】</b>【技能内容】</div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-title">自我评价</div>
+      <div class="item">【一句话评价】</div>
+      <div class="item">【一句话评价】</div>
+      <div class="item">【一句话评价】</div>
+    </div>
+  </aside>
+
+  <main class="col">
+    <div class="section">
+      <div class="sec-title-main"><span class="bar"></span><span>项目经历</span></div>
+      <div class="divider"></div>
+      <div class="proj-head">
+        <span>【项目名】（【架构一句话】）｜【角色】</span>
+        <span class="pdate">【起止时间】</span>
+      </div>
+      <div class="tech">技术栈：【技术栈】</div>
+      <p class="intro">【产品一句话定位】</p>
+      <div class="prow"><span class="plab">【能力标签】：</span><span class="pcont">【亮点内容】</span></div>
+      <div class="prow"><span class="plab">【能力标签】：</span><span class="pcont">【亮点内容】</span></div>
+    </div>
+  </main>
+
+<script>
+/* 单页自适应：内容超出设计画布时整体等比缩小，保证恰好一页。
+   底部保留 BOTTOM px 留白，内容不贴页底。CSS zoom 会重新布局，缩小后不残留空白第二页。
+   复用项目模板时也把这整段注入到 </body> 前。 */
+(function () {
+  var BOTTOM = 60; /* 内容距页底的留白(px)；想更空/更满改这里即可 */
+  function contentEnd(el) {
+    var kids = [];
+    for (var i = 0; i < el.children.length; i++) {
+      var c = el.children[i];
+      if (c.tagName === 'SCRIPT' || c.tagName === 'STYLE') { continue; }
+      kids.push(c);
+    }
+    if (kids.length === 0) { return el.scrollHeight; }
+    return kids[kids.length - 1].getBoundingClientRect().bottom;
+  }
+  function fit() {
+    var el = document.body;
+    var ow = parseFloat(el.getAttribute('data-ow'));
+    var oh = parseFloat(el.getAttribute('data-oh'));
+    if (!(ow > 0)) { ow = el.getBoundingClientRect().width || 820; el.setAttribute('data-ow', ow); }
+    if (!(oh > 0)) {
+      var mh = parseFloat(getComputedStyle(el).minHeight) || 0;
+      oh = mh > 0 ? mh : (parseFloat(getComputedStyle(el).height) || 1160);
+      el.setAttribute('data-oh', oh);
+    }
+    el.style.zoom = '1';
+    el.style.width = ow + 'px';
+    var ch = contentEnd(el);
+    var s = Math.min(1, (oh - BOTTOM) / ch, ow / el.scrollWidth);
+    if (!(s > 0.5)) { s = 0.5; }
+    el.style.width = Math.round(ow / s) + 'px';
+    el.style.zoom = s;
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', fit); }
+  else { fit(); }
+  window.addEventListener('load', fit);
+})();
+</script>
+</body>
+</html>

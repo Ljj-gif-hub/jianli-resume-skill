@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>简历</title>
+<style>
+  /* 现代模板（accent）：渐变头部大色块 + 彩色强调，适合互联网 / 设计感强的岗位。
+     与经典模板同契约：body 820x1160 (min-height)，@page 615.1pt x 870pt，tier 密度档，底部 fit 脚本。 */
+  @page { size: 615.1pt 870pt; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  :root { --accent: #6D5BF6; --accent2: #2F6FEB; --ink: #1A1A1A; --body: #3F434A; --muted: #8A9099; --line: #E8EAED; }
+  body {
+    width: 820px; min-height: 1160px; margin: 0 auto;
+    font-family: "Microsoft YaHei", "微软雅黑", sans-serif;
+    font-size: 14px; line-height: 1.5; color: var(--body); background: #FFF;
+  }
+  body.tier-compact { font-size: 13px; line-height: 1.42; }
+  body.tier-dense   { font-size: 12px; line-height: 1.34; }
+
+  .hero {
+    background: linear-gradient(130deg, var(--accent2) 0%, var(--accent) 100%);
+    color: #FFF; padding: 40px 41px 26px;
+  }
+  .hero .name { font-size: 30px; font-weight: 700; letter-spacing: 2px; }
+  .hero .role { display: inline-block; margin-top: 6px; font-size: 13.5px; font-weight: 600; letter-spacing: 1px;
+    background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.45); border-radius: 999px; padding: 2px 14px; }
+  .hero .contact { margin-top: 14px; font-size: 12.5px; line-height: 2; }
+  .hero .contact span { margin-right: 20px; opacity: .95; }
+
+  .section { margin: 0 41px 10px; }
+  .sec-title { display: flex; align-items: center; margin: 12px 0 4px -2px; }
+  .sec-title .bar { width: 4px; height: 18px; border-radius: 2px; background: linear-gradient(180deg, var(--accent2), var(--accent)); margin-right: 10px; flex: 0 0 auto; }
+  .sec-title span { font-size: 19px; font-weight: 700; color: var(--ink); letter-spacing: 2px; }
+  .divider { border-top: 1px solid var(--line); }
+
+  .skillslist { margin-top: 6px; }
+  .srow { display: flex; align-items: baseline; margin-bottom: 6px; page-break-inside: avoid; }
+  .slab { flex: 0 0 118px; font-weight: 600; color: var(--accent); }
+  .scont { flex: 1; line-height: 1.48; }
+
+  .proj-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 15px; font-weight: 700; color: var(--ink); margin: 2px 0 6px; }
+  .proj-head .pdate { font-size: 13px; font-weight: 600; color: var(--accent); white-space: nowrap; }
+  .tech { font-size: 12.5px; color: var(--muted); margin-bottom: 5px; }
+  .intro { margin-bottom: 6px; }
+  .prow { display: flex; align-items: baseline; margin-bottom: 6px; page-break-inside: avoid; }
+  .plab { flex: 0 0 118px; font-weight: 600; color: var(--accent); }
+  .pcont { flex: 1; line-height: 1.45; }
+</style>
+</head>
+<body>
+
+  <div class="hero">
+    <div class="name">【姓名】</div>
+    <div class="role">【意向岗位】</div>
+    <div class="contact">
+      <span>电话：【电话】</span><span>邮箱：【邮箱】</span><br>
+      <span>【年龄】岁</span><span>【城市】</span><span>【学历】</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title"><span class="bar"></span><span>相关技能</span></div>
+    <div class="divider"></div>
+    <div class="skillslist">
+      <div class="srow"><span class="slab">【技能标签】：</span><span class="scont">【技能内容】</span></div>
+      <div class="srow"><span class="slab">【技能标签】：</span><span class="scont">【技能内容】</span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title"><span class="bar"></span><span>项目经历</span></div>
+    <div class="divider"></div>
+    <div class="proj-head">
+      <span>【项目名】（【架构一句话】）｜【角色】</span>
+      <span class="pdate">【起止时间】</span>
+    </div>
+    <div class="tech">技术栈：【技术栈】</div>
+    <p class="intro">【产品一句话定位】</p>
+    <div class="prow"><span class="plab">【能力标签】：</span><span class="pcont">【亮点内容】</span></div>
+    <div class="prow"><span class="plab">【能力标签】：</span><span class="pcont">【亮点内容】</span></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title"><span class="bar"></span><span>自我评价</span></div>
+    <div class="divider"></div>
+    <div class="prow"><span class="plab">【标签】：</span><span class="pcont">【一句话】</span></div>
+  </div>
+
+<script>
+/* 单页自适应：内容超出设计画布时整体等比缩小，保证恰好一页。
+   底部保留 BOTTOM px 留白，内容不贴页底。CSS zoom 会重新布局，缩小后不残留空白第二页。
+   复用项目模板时也把这整段注入到 </body> 前。 */
+(function () {
+  var BOTTOM = 60; /* 内容距页底的留白(px)；想更空/更满改这里即可 */
+  function contentEnd(el) {
+    var kids = [];
+    for (var i = 0; i < el.children.length; i++) {
+      var c = el.children[i];
+      if (c.tagName === 'SCRIPT' || c.tagName === 'STYLE') { continue; }
+      kids.push(c);
+    }
+    if (kids.length === 0) { return el.scrollHeight; }
+    return kids[kids.length - 1].getBoundingClientRect().bottom;
+  }
+  function fit() {
+    var el = document.body;
+    var ow = parseFloat(el.getAttribute('data-ow'));
+    var oh = parseFloat(el.getAttribute('data-oh'));
+    if (!(ow > 0)) { ow = el.getBoundingClientRect().width || 820; el.setAttribute('data-ow', ow); }
+    if (!(oh > 0)) {
+      var mh = parseFloat(getComputedStyle(el).minHeight) || 0;
+      oh = mh > 0 ? mh : (parseFloat(getComputedStyle(el).height) || 1160);
+      el.setAttribute('data-oh', oh);
+    }
+    el.style.zoom = '1';
+    el.style.width = ow + 'px';
+    var ch = contentEnd(el);
+    var s = Math.min(1, (oh - BOTTOM) / ch, ow / el.scrollWidth);
+    if (!(s > 0.5)) { s = 0.5; }
+    el.style.width = Math.round(ow / s) + 'px';
+    el.style.zoom = s;
+  }
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', fit); }
+  else { fit(); }
+  window.addEventListener('load', fit);
+})();
+</script>
+</body>
+</html>
